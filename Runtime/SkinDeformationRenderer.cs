@@ -166,7 +166,10 @@ namespace Unity.DemoTeam.DigitalHuman
             SkinDeformationRenderer.enabledInstances.Remove(this);
 #endif
 
-            if (smr == null || smr.sharedMesh == null || smr.sharedMesh.GetInstanceID() >= 0)
+            // Only reset/deallocate the generated mesh instance owned by MeshInstanceBehaviour.
+            // Unity 6.5 deprecates Object.GetInstanceID(), and comparing the active sharedMesh
+            // against the generated mesh instance is safer than relying on instance id sign.
+            if (smr == null || smr.sharedMesh == null || meshInstance == null || smr.sharedMesh != meshInstance)
                 return;
 
             for (int i = 0; i != smr.sharedMesh.blendShapeCount; i++)
